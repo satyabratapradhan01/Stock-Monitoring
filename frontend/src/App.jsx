@@ -7,6 +7,8 @@ import ProductsPage from './landing_page/products/ProductsPage'
 import PricingPage from './landing_page/pricing/PricingPage'
 import SupportPage from './landing_page/support/SuportPage'
 import NotFound from './landing_page/NotFound'
+import Navbar from './landing_page/Navbar'
+import Footer from './landing_page/Footer'
 
 function App() {
   
@@ -14,6 +16,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
+      <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<Signup />} />
@@ -23,6 +26,7 @@ function App() {
         <Route path="/support" element={<SupportPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <Footer />
       </BrowserRouter>
     </>
   )
