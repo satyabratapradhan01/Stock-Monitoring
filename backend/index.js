@@ -2,18 +2,24 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const { HoldingsModel } = require("./model/HoldingModel");
 const { PositionsModel } = require("./model/PositionsModel");
+const { OrdersModel } = require("./model/OrdersModel")
 
 const PORT = process.env.PORT || 8080;
 const uri = process.env.MONGO_URL;
 
 const app = express();
 
-// app.get("/home", (req, res) => {
-//   res.send("hello satya...");
-// });
+app.use(cors());
+app.use(bodyParser.json());
+
+app.get("/home", (req, res) => {
+  res.send("hello satya...");
+});
 
 // app.get("/addHolding", async (req, res) => {
 //   let tempHoldings = [
@@ -180,6 +186,34 @@ const app = express();
 //   });
 //   res.send("position data save...")
 // });
+
+app.get("/allHoldings", async (req, res) => {
+  let allHoldings = await HoldingsModel.find({})
+  res.json(allHoldings)
+});
+
+app.get("/allPosition", async (req, res) => {
+  let allPosition = await PositionsModel.find({})
+  res.send(allPosition)
+  res.json(allPosition);
+});
+
+app.post("/newOrder", async (req, res) => {
+  let newOrder = new OrdersModel({
+    name: req.body.name,
+    qty: req.body.qty,
+    price: req.body.price,
+    mode: req.body.mode,
+  });
+  newOrder.save();
+  res.send("Order saved!");
+})
+
+app.get("/allOrder", async (req, res) => {
+  let allOrder = await OrdersModel.find({});
+  // res.send(allOrder)
+  res.json(allOrder);
+})
 
 app.listen(PORT, () => {
   console.log(`App is listing to port no. ${PORT}`);

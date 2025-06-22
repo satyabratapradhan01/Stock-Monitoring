@@ -11,6 +11,7 @@ const Holdings = () => {
   useEffect(() => {
     axios.get("http://localhost:8080/allHoldings").then((res) => {
       // console.log(res.data);
+      
       setAllHoldings(res.data);
     })
   }, [])
