@@ -4,10 +4,14 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
+
 
 const { HoldingsModel } = require("./model/HoldingModel");
 const { PositionsModel } = require("./model/PositionsModel");
-const { OrdersModel } = require("./model/OrdersModel")
+const { OrdersModel } = require("./model/OrdersModel");
+const { UserModel } = require("./model/UserModel");
 
 const PORT = process.env.PORT || 8080;
 const uri = process.env.MONGO_URL;
@@ -206,7 +210,7 @@ app.post("/newOrder", async (req, res) => {
     mode: req.body.mode,
   });
   newOrder.save();
-  res.send("Order saved!");
+  // res.send("Order saved!");
 })
 
 app.get("/allOrder", async (req, res) => {
@@ -214,6 +218,26 @@ app.get("/allOrder", async (req, res) => {
   // res.send(allOrder)
   res.json(allOrder);
 })
+
+// Authentication
+
+app.post("/signup",  (req, res) => {
+    let {username, email, password} = req.body;
+    bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(password, salt, async (err, hash) => {
+            let createdUser = await UserModel.create({
+                username, 
+                email,
+                password: hash,
+            })
+
+            let token = jwt.sign({email}, "satya");
+            res.cookie("token", token);
+            // res.redirectUrl()
+        });
+    });
+});
+
 
 app.listen(PORT, () => {
   console.log(`App is listing to port no. ${PORT}`);
